@@ -41,15 +41,15 @@
 
             do
             {
-                u = 2*Gen.NextDouble() - 1;
-                v = 2*Gen.NextDouble() - 1;
-            } while (u*u + v*v > 1 || (u == 0 && v == 0));
+                u = 2 * Gen.NextDouble() - 1;
+                v = 2 * Gen.NextDouble() - 1;
+            } while (u * u + v * v > 1 || (u == 0 && v == 0));
 
-            s = u*u + v*v;
-            t = Math.Sqrt((-2.0*Math.Log(s))/s);
+            s = u * u + v * v;
+            t = Math.Sqrt((-2.0 * Math.Log(s)) / s);
 
-            val1 = stdDev*u*t + mean;
-            val2 = stdDev*v*t + mean;
+            val1 = stdDev * u * t + mean;
+            val2 = stdDev * v * t + mean;
         }
 
     }
@@ -95,14 +95,14 @@
         // currently returns infinity - must fix equation or find out why x = 0
         private static double Sigmoid(double x)
         {
-            var result = 1.0/(1.0 + Math.Exp(-x));
+            var result = 1.0 / (1.0 + Math.Exp(-x));
 
             return result;
         }
 
         private static double SigmoidDerivative(double x)
         {
-            var result = Sigmoid(x)*(1 - Sigmoid(x));
+            var result = Sigmoid(x) * (1 - Sigmoid(x));
 
             return result;
         }
@@ -124,7 +124,7 @@
 
         private static double GaussianDerivative(double x)
         {
-            return (-2*x*Gaussian(x));
+            return (-2 * x * Gaussian(x));
         }
 
         private static double RationalSigmoid(double x)
@@ -134,9 +134,9 @@
 
         private static double RationalSigmoidDerivative(double x)
         {
-            double val = Math.Sqrt(1 + x*x);
+            double val = Math.Sqrt(1 + x * x);
 
-            return (1.0/val*(1 + val));
+            return (1.0 / val * (1 + val));
         }
     }
 
@@ -178,7 +178,7 @@
 
         public BackPropagationNetwork(int[] inputLayerSizes, TransferFunction[] inputTransferFunctions)
         {
-            if(inputTransferFunctions.Length != inputLayerSizes.Length)
+            if (inputTransferFunctions.Length != inputLayerSizes.Length)
                 throw new ArgumentException("There is not an equal number of layers and transfer functions.");
             if (inputTransferFunctions[0] != TransferFunction.None)
                 throw new ArgumentException("The first transfer function must be None");
@@ -211,8 +211,8 @@
                 LayerOutput[l] = new double[LayerSize[l]];
                 LayerInput[l] = new double[LayerSize[l]];
 
-                Weight[l] = new double[l == 0 ? InputSize : LayerSize[l-1]][];
-                PreviousWeightDelta[l] = new double[l == 0 ? InputSize : LayerSize[l-1]][];
+                Weight[l] = new double[l == 0 ? InputSize : LayerSize[l - 1]][];
+                PreviousWeightDelta[l] = new double[l == 0 ? InputSize : LayerSize[l - 1]][];
 
                 for (int i = 0; i < (l == 0 ? InputSize : LayerSize[l - 1]); i++)
                 {
@@ -233,7 +233,7 @@
                     Delta[l][j] = 0;
                 }
 
-                for (int i = 0; i < (l == 0 ? InputSize : LayerSize[l-1]); i++)
+                for (int i = 0; i < (l == 0 ? InputSize : LayerSize[l - 1]); i++)
                 {
                     for (int j = 0; j < LayerSize[l]; j++)
                     {
@@ -249,7 +249,7 @@
             if (inputValues.Length != InputSize)
                 throw new ArgumentException("Input Data is not of the correct dimension.");
 
-            output = new double[LayerSize[LayerCount-1]];
+            output = new double[LayerSize[LayerCount - 1]];
 
             for (int l = 0; l < LayerCount; l++)
             {
@@ -259,7 +259,7 @@
 
                     for (int i = 0; i < (l == 0 ? InputSize : LayerSize[l - 1]); i++)
                     {
-                        sum += Weight[l][i][j]*(l == 0 ? inputValues[i] : LayerOutput[l - 1][i]);
+                        sum += Weight[l][i][j] * (l == 0 ? inputValues[i] : LayerOutput[l - 1][i]);
 
                         sum += Bias[l][j];
                         LayerInput[l][j] = sum;
@@ -331,8 +331,8 @@
                 {
                     for (int j = 0; j < LayerSize[l]; j++)
                     {
-                        weightDelta = trainingRate*Delta[l][j]*(l == 0 ? input[i] : LayerOutput[l - 1][i]);
-                        Weight[l][i][j] -= weightDelta + momentum*PreviousWeightDelta[l][i][j];
+                        weightDelta = trainingRate * Delta[l][j] * (l == 0 ? input[i] : LayerOutput[l - 1][i]);
+                        Weight[l][i][j] -= weightDelta + momentum * PreviousWeightDelta[l][i][j];
 
                         PreviousWeightDelta[l][i][j] = weightDelta + momentum * PreviousWeightDelta[l][i][j];
                     }
@@ -342,8 +342,8 @@
             {
                 for (int i = 0; i < LayerSize[l]; i++)
                 {
-                    biasDelta = trainingRate*Delta[l][i];
-                    Bias[l][i] -= biasDelta + momentum*PreviousBiasDelta[l][i];
+                    biasDelta = trainingRate * Delta[l][i];
+                    Bias[l][i] -= biasDelta + momentum * PreviousBiasDelta[l][i];
 
                     PreviousBiasDelta[l][i] = biasDelta;
                 }

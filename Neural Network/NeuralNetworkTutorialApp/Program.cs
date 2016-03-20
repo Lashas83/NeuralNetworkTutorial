@@ -11,7 +11,7 @@ namespace NeuralNetworkTutorialApp
 
         static void Main(string[] args)
         {
-            var layerSizes = new[] {2, 2, 1};
+            var layerSizes = new[] { 2, 2, 1 };
 
             var transferFunctions = new[]
             {TransferFunction.None, TransferFunction.Sigmoid, TransferFunction.Linear};
@@ -57,7 +57,7 @@ namespace NeuralNetworkTutorialApp
             do
             {
                 // prepare for training epic
-                count ++;
+                count++;
                 error = 0;
 
                 // train
