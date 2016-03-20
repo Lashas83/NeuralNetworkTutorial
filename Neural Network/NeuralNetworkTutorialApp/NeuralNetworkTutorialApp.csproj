@@ -48,13 +48,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Neural Network\Neural Network.csproj">
-      <Project>{d7f9305f-d7b8-4d21-b1de-d3f223f000c7}</Project>
-      <Name>Neural Network</Name>
-    </ProjectReference>
+    <Content Include="test_network.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="test_network.xml" />
+    <ProjectReference Include="..\NeuralNetwork\Neural Network.csproj">
+      <Project>{D7F9305F-D7B8-4D21-B1DE-D3F223F000C7}</Project>
+      <Name>Neural Network</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
