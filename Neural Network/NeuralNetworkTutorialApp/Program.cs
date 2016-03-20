@@ -49,7 +49,7 @@ namespace NeuralNetworkTutorialApp
 
 
             double error = 0.0;
-            const int maxCount = 10;
+            const int maxCount = 100000;
             int count = 0;
 
             Stopwatch watch = Stopwatch.StartNew();
@@ -66,7 +66,7 @@ namespace NeuralNetworkTutorialApp
                     error += backPropagationNetwork.Train(ref input[i], ref expected[i], .15, .1);
                 }
 
-                if (count % 1 == 0)
+                if (count % 100 == 0 || error <= 0.0001 || count > maxCount)
                 {
                     Console.WriteLine("Epoch {0} completed with error {1:0.0000}", count, error);
                 }

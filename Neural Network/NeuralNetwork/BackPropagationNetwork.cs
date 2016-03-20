@@ -260,19 +260,19 @@
                     for (int i = 0; i < (l == 0 ? InputSize : LayerSize[l - 1]); i++)
                     {
                         sum += Weight[l][i][j] * (l == 0 ? inputValues[i] : LayerOutput[l - 1][i]);
-
-                        sum += Bias[l][j];
-                        LayerInput[l][j] = sum;
-
-                        LayerOutput[l][j] = Neural_Network.TransferFunctions.Evaluate(TransferFunctions[l], sum);
                     }
+
+                    sum += Bias[l][j];
+                    LayerInput[l][j] = sum;
+
+                    LayerOutput[l][j] = Neural_Network.TransferFunctions.Evaluate(TransferFunctions[l], sum);
                 }
             }
 
             for (int i = 0; i < LayerSize[LayerCount - 1]; i++)
             {
                 output[i] = LayerOutput[LayerCount - 1][i];
-                Console.WriteLine("For inputs {0} and {1}, output is {2}", inputValues[0], inputValues[1], output[i]);
+                //Console.WriteLine("For inputs {0} and {1}, output is {2}", inputValues[0], inputValues[1], output[i]);
             }
         }
 
@@ -284,9 +284,6 @@
                 throw new ArgumentException("The input is of the wrong dimension.", "desired");
 
             double error = 0.0;
-            double sum = 0.0;
-            double weightDelta = 0.0;
-            double biasDelta = 0.0;
             var output = new double[LayerSize[LayerCount - 1]];
 
             Run(ref input, out output);
@@ -298,28 +295,22 @@
                 {
                     for (int k = 0; k < LayerSize[l]; k++)
                     {
-                        Delta[l][k] = output[k] - desired[k];
+                        var diff = output[k] - desired[k];
 
-                        error += Math.Pow(Delta[l][k], 2);
+                        error += Math.Pow(diff, 2);
 
-                        Delta[l][k] *= Neural_Network.TransferFunctions.EvaluateDerivative(TransferFunctions[l],
-                            LayerInput[l][k]);
+                        Delta[l][k] = diff * Neural_Network.TransferFunctions.EvaluateDerivative(TransferFunctions[l], LayerInput[l][k]);
                     }
                 }
                 else // in a hidden layer
                 {
                     for (int i = 0; i < LayerSize[l]; i++)
                     {
-                        sum = 0.0;
+                        var sum = 0.0;
                         for (int j = 0; j < LayerSize[l + 1]; j++)
-                        {
-                            sum += Weight[l + 1][i][j] - Delta[i][j];
-                        }
+                            sum += Weight[l + 1][i][j] * Delta[i][j];
 
-                        sum *= Neural_Network.TransferFunctions.EvaluateDerivative(TransferFunctions[l],
-                            LayerInput[l][i]);
-
-                        Delta[l][i] = sum;
+                        Delta[l][i] = sum * Neural_Network.TransferFunctions.EvaluateDerivative(TransferFunctions[l], LayerInput[l][i]); ;
                     }
                 }
             }
@@ -331,10 +322,10 @@
                 {
                     for (int j = 0; j < LayerSize[l]; j++)
                     {
-                        weightDelta = trainingRate * Delta[l][j] * (l == 0 ? input[i] : LayerOutput[l - 1][i]);
-                        Weight[l][i][j] -= weightDelta + momentum * PreviousWeightDelta[l][i][j];
+                        var weightDelta = trainingRate * Delta[l][j] * (l == 0 ? input[i] : LayerOutput[l - 1][i]) + momentum * PreviousWeightDelta[l][i][j];
+                        Weight[l][i][j] -= weightDelta;
 
-                        PreviousWeightDelta[l][i][j] = weightDelta + momentum * PreviousWeightDelta[l][i][j];
+                        PreviousWeightDelta[l][i][j] = weightDelta;
                     }
                 }
 
@@ -342,7 +333,7 @@
             {
                 for (int i = 0; i < LayerSize[l]; i++)
                 {
-                    biasDelta = trainingRate * Delta[l][i];
+                    var biasDelta = trainingRate * Delta[l][i];
                     Bias[l][i] -= biasDelta + momentum * PreviousBiasDelta[l][i];
 
                     PreviousBiasDelta[l][i] = biasDelta;
