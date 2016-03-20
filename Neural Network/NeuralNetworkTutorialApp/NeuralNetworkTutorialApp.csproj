@@ -51,9 +51,9 @@
     <Content Include="test_network.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NeuralNetwork\Neural Network.csproj">
+    <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.csproj">
       <Project>{D7F9305F-D7B8-4D21-B1DE-D3F223F000C7}</Project>
-      <Name>Neural Network</Name>
+      <Name>NeuralNetwork</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

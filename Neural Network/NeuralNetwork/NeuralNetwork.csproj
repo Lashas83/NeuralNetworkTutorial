@@ -40,7 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackPropagationNetwork.cs" />
+    <Compile Include="Gaussian.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TransferFunction.cs" />
+    <Compile Include="TransferFunctions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

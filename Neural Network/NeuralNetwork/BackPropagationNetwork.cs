@@ -1,145 +1,8 @@
-﻿namespace Neural_Network
+﻿using System;
+using System.Xml;
+
+namespace NeuralNetwork
 {
-    using System;
-    using System.Security;
-    using System.Xml;
-
-    public enum TransferFunction
-    {
-        None,
-        Sigmoid,
-        Linear,
-        Gaussian,
-        RationalSigmoid
-    }
-
-    public static class Gaussian
-    {
-        private static readonly Random Gen = new Random();
-
-        public static double GetRandomGaussian()
-        {
-            return GetRandomGaussian(0, 1);
-        }
-
-        public static double GetRandomGaussian(double mean, double stdDev)
-        {
-            double rVal1;
-            double rVal2;
-
-            GetRandomGaussian(mean, stdDev, out rVal1, out rVal2);
-
-            return rVal1;
-        }
-
-        public static void GetRandomGaussian(double mean, double stdDev, out double val1, out double val2)
-        {
-            double u;
-            double v;
-            double s;
-            double t;
-
-            do
-            {
-                u = 2 * Gen.NextDouble() - 1;
-                v = 2 * Gen.NextDouble() - 1;
-            } while (u * u + v * v > 1 || (u == 0 && v == 0));
-
-            s = u * u + v * v;
-            t = Math.Sqrt((-2.0 * Math.Log(s)) / s);
-
-            val1 = stdDev * u * t + mean;
-            val2 = stdDev * v * t + mean;
-        }
-
-    }
-
-    static class TransferFunctions
-    {
-        public static double Evaluate(TransferFunction transferFunction, double input)
-        {
-            switch (transferFunction)
-            {
-                case TransferFunction.Sigmoid:
-                    return Sigmoid(input);
-                case TransferFunction.Linear:
-                    return Linear(input);
-                case TransferFunction.Gaussian:
-                    return Gaussian(input);
-                case TransferFunction.RationalSigmoid:
-                    return RationalSigmoid(input);
-                default:
-                    return 0.0;
-            }
-        }
-
-        public static double EvaluateDerivative(TransferFunction transferFunction, double input)
-        {
-            switch (transferFunction)
-            {
-                case TransferFunction.Sigmoid:
-                    return SigmoidDerivative(input);
-                case TransferFunction.Linear:
-                    return LinearDerivative(input);
-                case TransferFunction.Gaussian:
-                    return GaussianDerivative(input);
-                case TransferFunction.RationalSigmoid:
-                    return RationalSigmoidDerivative(input);
-                default:
-                    return 0.0;
-            }
-        }
-
-        /* Transfer Function definitions */
-
-        // currently returns infinity - must fix equation or find out why x = 0
-        private static double Sigmoid(double x)
-        {
-            var result = 1.0 / (1.0 + Math.Exp(-x));
-
-            return result;
-        }
-
-        private static double SigmoidDerivative(double x)
-        {
-            var result = Sigmoid(x) * (1 - Sigmoid(x));
-
-            return result;
-        }
-
-        private static double Linear(double x)
-        {
-            return x;
-        }
-
-        private static double LinearDerivative(double x)
-        {
-            return 1;
-        }
-
-        private static double Gaussian(double x)
-        {
-            return Math.Exp(-Math.Pow(x, 2));
-        }
-
-        private static double GaussianDerivative(double x)
-        {
-            return (-2 * x * Gaussian(x));
-        }
-
-        private static double RationalSigmoid(double x)
-        {
-            return (x / (1.0 + Math.Sqrt(1.0 + x * x)));
-        }
-
-        private static double RationalSigmoidDerivative(double x)
-        {
-            double val = Math.Sqrt(1 + x * x);
-
-            return (1.0 / val * (1 + val));
-        }
-    }
-
     public class BackPropagationNetwork
     {
         private int LayerCount { get; set; }
@@ -265,7 +128,7 @@
                     sum += Bias[l][j];
                     LayerInput[l][j] = sum;
 
-                    LayerOutput[l][j] = Neural_Network.TransferFunctions.Evaluate(TransferFunctions[l], sum);
+                    LayerOutput[l][j] = NeuralNetwork.TransferFunctions.Evaluate(TransferFunctions[l], sum);
                 }
             }
 
@@ -299,7 +162,7 @@
 
                         error += Math.Pow(diff, 2);
 
-                        Delta[l][k] = diff * Neural_Network.TransferFunctions.EvaluateDerivative(TransferFunctions[l], LayerInput[l][k]);
+                        Delta[l][k] = diff * NeuralNetwork.TransferFunctions.EvaluateDerivative(TransferFunctions[l], LayerInput[l][k]);
                     }
                 }
                 else // in a hidden layer
@@ -310,7 +173,7 @@
                         for (int j = 0; j < LayerSize[l + 1]; j++)
                             sum += Weight[l + 1][i][j] * Delta[i][j];
 
-                        Delta[l][i] = sum * Neural_Network.TransferFunctions.EvaluateDerivative(TransferFunctions[l], LayerInput[l][i]); ;
+                        Delta[l][i] = sum * NeuralNetwork.TransferFunctions.EvaluateDerivative(TransferFunctions[l], LayerInput[l][i]); ;
                     }
                 }
             }

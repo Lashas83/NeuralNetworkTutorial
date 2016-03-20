@@ -1,4 +1,4 @@
-﻿using Neural_Network;
+﻿using NeuralNetwork;
 
 namespace NeuralNetworkTutorialApp
 {
@@ -7,7 +7,7 @@ namespace NeuralNetworkTutorialApp
 
     class Program
     {
-        private const string _filePath = @"C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\test_network.xml";
+        private const string _filePath = @"test_network.xml";
 
         static void Main(string[] args)
         {
@@ -21,31 +21,21 @@ namespace NeuralNetworkTutorialApp
                 Name = "XOR-Gate Example"
             };
 
-            var input = new double[4][];
-
-            var expected = new double[4][];
-
-            for (int i = 0; i < 4; i++)
+            var input = new[]
             {
-                input[i] = new double[2];
-                expected[i] = new double[1];
-            }
+                new[] {0.0, 0.0},
+                new [] {1.0, 0.0},
+                new [] {0.0, 1.0},
+                new [] {1.0, 1.0},
+            };
 
-            input[0][0] = 0.0;
-            input[0][1] = 0.0;
-            expected[0][0] = 0; // false xor false = false
-
-            input[1][0] = 1.0;
-            input[1][1] = 0.0;
-            expected[1][0] = 1; // true xor false = true
-
-            input[2][0] = 0.0;
-            input[2][1] = 1.0;
-            expected[2][0] = 1; // false xor true = true
-
-            input[3][0] = 1.0;
-            input[3][1] = 1.0;
-            expected[3][0] = 0; // true xor true = false
+            var expected = new[]
+            {
+                new[] {0.0},
+                new[] {1.0},
+                new[] {1.0},
+                new[] {0.0}
+            };
 
 
             double error = 0.0;
@@ -61,7 +51,7 @@ namespace NeuralNetworkTutorialApp
                 error = 0;
 
                 // train
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < input.Length; i++)
                 {
                     error += backPropagationNetwork.Train(ref input[i], ref expected[i], .15, .1);
                 }
@@ -74,17 +64,15 @@ namespace NeuralNetworkTutorialApp
 
             watch.Stop();
 
+            Console.WriteLine("Training complete in {0}", watch.Elapsed);
+
             var output = new double[4][];
 
-            for (int i = 0; i < 4; i++)
-            {
+            for (int i = 0; i < input.Length; i++)
                 backPropagationNetwork.Run(ref input[i], out output[i]);
-            }
 
-            for (int i = 0; i < 4; i++)
-            {
+            for (int i = 0; i < input.Length; i++)
                 Console.WriteLine("For inputs {0} and {1}, output is {2}", input[i][0], input[i][1], output[i][0]);
-            }
 
             Console.WriteLine("Time Elapsed :" + watch.Elapsed);
             Console.WriteLine("Hit Enter...");
